@@ -67,7 +67,7 @@ const Student = ({
             setStudentInfo({ ...studentInfo, email: e.target.value })
           }
         />
-        <div className=" w-full border flex gap-2 justify-center">
+        <div className=" w-full  flex gap-2 justify-center">
           <Button
             buttonType="default"
             onClick={onClickForEdite !== undefined ? onClickForEdite : () => {}}

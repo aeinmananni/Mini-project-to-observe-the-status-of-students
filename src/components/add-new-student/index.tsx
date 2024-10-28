@@ -13,9 +13,9 @@ const AddNewStudent = forwardRef<HTMLFormElement>((_props, ref) => {
   const { setStudent, students } = useStoreManager();
   const { register, handleSubmit, reset } = useForm<StudentType>({
     defaultValues: {
-      fullName: editeMode ? editeMode.fullName : "",
-      classNumber: editeMode ? editeMode.classNumber : "",
-      phoneNumber: editeMode ? editeMode.phoneNumber : "",
+      std_fullName: editeMode ? editeMode.std_fullName : "",
+      std_classNumber: editeMode ? editeMode.std_classNumber : "",
+      std_phoneNumber: editeMode ? editeMode.std_phoneNumber : "",
       email: editeMode ? editeMode.email : "",
     },
   });
@@ -23,7 +23,7 @@ const AddNewStudent = forwardRef<HTMLFormElement>((_props, ref) => {
   const onSubmit = (data: StudentType) => {
     if (params.id) {
       const findIndex = students.findIndex(
-        (it) => it.id === (params.id ? +params.id : 0)
+        (it) => it.std_id === (params.id ? +params.id : 0)
       );
       students[findIndex] = { ...students[findIndex], ...data };
       setStudent(students);
@@ -33,9 +33,9 @@ const AddNewStudent = forwardRef<HTMLFormElement>((_props, ref) => {
       setStudent([...students, newStudent]);
     }
     reset({
-      fullName: "",
-      classNumber: "",
-      phoneNumber: "",
+      std_fullName: "",
+      std_classNumber: "",
+      std_phoneNumber: "",
       email: "",
     });
   };

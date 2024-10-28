@@ -2,32 +2,16 @@
 import Student from "../students";
 import { useStoreManager } from "../store/store";
 import Button from "../UI/button-custom";
-import { ChangeEvent, useEffect, useState, useRef } from "react";
-import { StudentType } from "../models";
+import { useEffect, useRef } from "react";
 import Input from "../UI/input-custom";
-import Modal from "../modal";
-import BackDrop from "../backdrop";
-import SideDrower from "../side-drower";
 import { useNavigate } from "react-router-dom";
+import { useGetStudents } from "../hooks/useStudentshook";
 const StudentRoute = () => {
   const navigate = useNavigate();
-  const {
-    students,
-    handeDeleteStudents,
-    setDisplayCard,
-    displayCard,
-    setStudent,
-    showModal,
-    setShowModal,
-  } = useStoreManager();
-  const handelEditeStudent = useStoreManager((s) => s.handelEditeStudents);
+  const { setDisplayCard, displayCard } = useStoreManager();
+
+  const { state, loading } = useGetStudents();
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const [ArrayHoder, setArrayHoder] = useState<StudentType[]>([]);
-  const handelfilterStudents = (e: ChangeEvent<HTMLInputElement>) => {
-    const newValue = [...ArrayHoder];
-    const filter = newValue.filter((t) => t.fullName.includes(e.target.value));
-    setStudent(filter);
-  };
 
   const handelScroll = () => {
     if (inputRef.current) {
@@ -38,23 +22,18 @@ const StudentRoute = () => {
     }
   };
 
-  useEffect(() => {
-    setArrayHoder(students);
-  }, []);
-
+  useEffect(() => {}, []);
+  if (loading) {
+    return <div>Loading ...</div>;
+  }
   return (
     <>
-      <SideDrower />
-      <Modal onChange={(e) => console.log("FFFFF : ", e)} />
-      <BackDrop backDrop={showModal} onClick={() => setShowModal(false)} />
-
-      <div className="relative p-2 w-full h-full  flex flex-col gap-4  items-center">
+      <div className="relative  w-full h-full  flex flex-col gap-4  items-center">
         <Input
           ref={inputRef}
           type="text"
           placeholder="جست و جوی دانش اموزان .."
           className="border-2 shadow-md rounded-md w-full p-2  outline-offset-2"
-          onChange={(e) => handelfilterStudents(e)}
         />
         <Button buttonType="success" onClick={() => setDisplayCard((c) => !c)}>
           تغییر وضعیت نمایش
@@ -64,24 +43,24 @@ const StudentRoute = () => {
             displayCard ? "grid-cols-2" : "grid-cols-1"
           } `}
         >
-          {students.map((it) => (
-            <Student
-              key={it.id}
-              studentNumnber={it.id}
-              fullName={it.fullName}
-              classNumber={it.classNumber}
-              phoneNumber={it.phoneNumber}
-              email={it.email}
-              onClickForDelete={() => handeDeleteStudents(it.id)}
-              onClickForEdite={() => {
-                const personInfo = handelEditeStudent(it.id);
-                navigate(`/addStudent/${it.id}`, {
-                  state: { editeInfo: personInfo },
-                  replace: true,
-                });
-              }}
-            />
-          ))}
+          {state &&
+            state.map((it) => (
+              <Student
+                key={it.std_id}
+                studentNumnber={it.std_id}
+                fullName={it.std_fullName}
+                classNumber={it.std_classNumber}
+                phoneNumber={it.std_phoneNumber}
+                email={it.std_email}
+                onClickForDelete={() => console.log(it.std_id)}
+                onClickForEdite={() => {
+                  navigate(`/addStudent/${it.std_id}`, {
+                    state: { editeInfo: it },
+                    replace: true,
+                  });
+                }}
+              />
+            ))}
           <Button
             onClick={handelScroll}
             className="absolute top-[128rem] left-2"
