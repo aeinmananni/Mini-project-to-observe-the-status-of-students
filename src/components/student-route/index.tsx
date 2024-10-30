@@ -47,7 +47,7 @@ const StudentRoute = () => {
             state.map((it) => (
               <Student
                 key={it.std_id}
-                studentNumnber={it.std_id}
+                studentNumnber={it.std_id ?? 0}
                 fullName={it.std_fullName}
                 classNumber={it.std_classNumber}
                 phoneNumber={it.std_phoneNumber}
