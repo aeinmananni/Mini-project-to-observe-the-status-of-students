@@ -1,20 +1,23 @@
+import { useEffect } from "react";
 import { StudentType } from "../models";
-import { useFetch } from "./use-fetch";
+import useFetchApi from "./use-fetch";
 
 export const useGetStudents = () => {
-  const { state, loading } = useFetch<StudentType[]>({
+  const { dataStatus, fetchDataFunction } = useFetchApi<StudentType[]>({
     apiUrl: "http://localhost:5000/api/statusStudent/GET/All",
     method: "GET",
   });
-  return { state, loading };
+  useEffect(() => {
+    fetchDataFunction();
+  }, []);
+  return { dataStatus };
 };
 
-// export const useSaveStudents = (value?: { data?: StudentType }) => {
-//   const { state } = useFetch<StudentType>({
-//     apiUrl: "http://localhost:5000/api/statusStudent/POST/Add",
-//     method: "POST",
-//     data: value?.data,
-//   });
+export const useSaveStudents = () => {
+  const { dataStatus, fetchDataFunction } = useFetchApi<StudentType>({
+    apiUrl: "http://localhost:5000/api/statusStudent/POST/Add",
+    method: "POST",
+  });
 
-//   return { state };
-// };
+  return { dataStatus, fetchDataFunction };
+};

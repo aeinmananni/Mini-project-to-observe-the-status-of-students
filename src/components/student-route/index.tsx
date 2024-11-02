@@ -2,7 +2,7 @@
 import Student from "../students";
 import { useStoreManager } from "../store/store";
 import Button from "../UI/button-custom";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import Input from "../UI/input-custom";
 import { useNavigate } from "react-router-dom";
 import { useGetStudents } from "../hooks/useStudentshook";
@@ -10,7 +10,7 @@ const StudentRoute = () => {
   const navigate = useNavigate();
   const { setDisplayCard, displayCard } = useStoreManager();
 
-  const { state, loading } = useGetStudents();
+  const { dataStatus } = useGetStudents();
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const handelScroll = () => {
@@ -22,8 +22,7 @@ const StudentRoute = () => {
     }
   };
 
-  useEffect(() => {}, []);
-  if (loading) {
+  if (dataStatus.isLoading) {
     return <div>Loading ...</div>;
   }
   return (
@@ -43,8 +42,8 @@ const StudentRoute = () => {
             displayCard ? "grid-cols-2" : "grid-cols-1"
           } `}
         >
-          {state &&
-            state.map((it) => (
+          {dataStatus.data &&
+            dataStatus.data.map((it) => (
               <Student
                 key={it.std_id}
                 studentNumnber={it.std_id ?? 0}

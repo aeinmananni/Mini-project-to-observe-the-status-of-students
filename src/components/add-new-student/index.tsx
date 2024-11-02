@@ -5,12 +5,13 @@ import { StudentType } from "../models";
 import { forwardRef } from "react";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { useSaveStudents } from "../hooks/useStudentshook";
 const AddNewStudent = forwardRef<HTMLFormElement>((_props, ref) => {
   const nav = useNavigate();
   const location = useLocation();
   // const params = useParams();
   const editeMode: StudentType = location?.state?.editeInfo;
+  const { fetchDataFunction, dataStatus } = useSaveStudents();
   const { register, handleSubmit, reset } = useForm<StudentType>({
     defaultValues: {
       std_fullName: editeMode ? editeMode.std_fullName : "",
@@ -21,17 +22,21 @@ const AddNewStudent = forwardRef<HTMLFormElement>((_props, ref) => {
   });
 
   const onSubmit = async (data: StudentType) => {
-    try {
-      const response = await axios.post(
-        "http://localhost:5000/api/statusStudent/POST/Add",
-        data
-      );
-      nav("/");
-      reset();
-      console.log(response.data);
-    } catch (error) {
-      console.log(error);
-    }
+    fetchDataFunction(data);
+    nav("/");
+    reset();
+    console.log(dataStatus);
+    // try {
+    //   const response = await axios.post(
+    //     "http://localhost:5000/api/statusStudent/POST/Add",
+    //     data
+    //   );
+    //   nav("/");
+    //   reset();
+    //   console.log(response.data);
+    // } catch (error) {
+    //   console.log(error);
+    // }
   };
 
   return (

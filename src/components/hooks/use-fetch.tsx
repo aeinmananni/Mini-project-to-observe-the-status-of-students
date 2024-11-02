@@ -1,44 +1,55 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
+import axios, { AxiosRequestConfig, Method } from "axios";
+import { useState } from "react";
 
-type UseFetchType<T> = {
+type FetchApiType = {
   apiUrl: string;
-  method?: "GET" | "POST" | "PUT" | "DELETE";
-  data?: T;
-  refresh?: boolean;
+  method: Method;
 };
 
-export const useFetch = <T,>({
-  apiUrl,
-  method = "GET",
-  refresh,
-  data,
-}: UseFetchType<T>) => {
-  const [state, setState] = useState<T | undefined>(undefined);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
+type DataStatusType<T> = {
+  data: T | null;
+  isLoading: boolean;
+  errors: string | null;
+};
 
-  const handleFetch = async () => {
-    setLoading(true);
+const useFetchApi = <T,>({ apiUrl, method = "GET" }: FetchApiType) => {
+  const [dataStatus, setDatastatus] = useState<DataStatusType<T>>({
+    data: null,
+    isLoading: false,
+    errors: "",
+  });
+
+  const fetchDataFunction = async <T,>(bodyData?: T | null) => {
+    setDatastatus((prev) => ({ ...prev, isLoading: true, errors: null }));
+
     try {
-      const response = await axios({ url: apiUrl, method, data });
-      setState(response.data);
-      setError(""); // Clear previous errors
-    } catch (err) {
-      if (axios.isAxiosError(err) && err.message) {
-        setError(err.message);
-      } else {
-        setError("An unknown error occurred");
-      }
+      const options: AxiosRequestConfig = {
+        method,
+        url: apiUrl,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: method === "POST" || method === "PUT" ? bodyData : null,
+      };
+      const response = await axios(options);
+      setDatastatus((prev) => ({
+        ...prev,
+        data: response.data,
+        isLoading: false,
+      }));
+    } catch (error: any) {
+      setDatastatus((prev) => ({
+        ...prev,
+        errors: error?.response?.data?.message || error?.message,
+        isLoading: false,
+        data: null,
+      }));
     } finally {
-      setLoading(false);
+      setDatastatus((prev) => ({ ...prev, isLoading: false }));
     }
   };
-  console.log(data);
 
-  useEffect(() => {
-    handleFetch();
-  }, [apiUrl, method, data, refresh]);
-
-  return { state, loading, error };
+  return { dataStatus, fetchDataFunction };
 };
+
+export default useFetchApi;
