@@ -3,15 +3,20 @@ import Button from "../UI/button-custom";
 import { useForm } from "react-hook-form";
 import { StudentType } from "../models";
 import { forwardRef } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useSaveStudents } from "../hooks/useStudentshook";
 const AddNewStudent = forwardRef<HTMLFormElement>((_props, ref) => {
   const nav = useNavigate();
   const location = useLocation();
-  // const params = useParams();
+  console.log(location);
+  const params = useParams();
   const editeMode: StudentType = location?.state?.editeInfo;
-  const { fetchDataFunction, dataStatus } = useSaveStudents();
+
+  const { fetchDataFunction, dataStatus } = useSaveStudents(
+    params.id ? +params.id : 0
+  );
+
   const { register, handleSubmit, reset } = useForm<StudentType>({
     defaultValues: {
       std_fullName: editeMode ? editeMode.std_fullName : "",
@@ -22,21 +27,11 @@ const AddNewStudent = forwardRef<HTMLFormElement>((_props, ref) => {
   });
 
   const onSubmit = async (data: StudentType) => {
+    console.log(location.state.editeInfo);
     fetchDataFunction(data);
     nav("/");
     reset();
     console.log(dataStatus);
-    // try {
-    //   const response = await axios.post(
-    //     "http://localhost:5000/api/statusStudent/POST/Add",
-    //     data
-    //   );
-    //   nav("/");
-    //   reset();
-    //   console.log(response.data);
-    // } catch (error) {
-    //   console.log(error);
-    // }
   };
 
   return (

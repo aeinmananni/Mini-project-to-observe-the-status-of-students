@@ -13,10 +13,13 @@ export const useGetStudents = () => {
   return { dataStatus };
 };
 
-export const useSaveStudents = () => {
+export const useSaveStudents = (id?: number) => {
   const { dataStatus, fetchDataFunction } = useFetchApi<StudentType>({
-    apiUrl: "http://localhost:5000/api/statusStudent/POST/Add",
-    method: "POST",
+    apiUrl:
+      id && id !== 0
+        ? `http://localhost:5000/api/statusStudent/PUT/Edite/${id}`
+        : "http://localhost:5000/api/statusStudent/POST/Add",
+    method: id ? "PUT" : "POST",
   });
 
   return { dataStatus, fetchDataFunction };
