@@ -9,7 +9,6 @@ import { useSaveStudents } from "../hooks/useStudentshook";
 const AddNewStudent = forwardRef<HTMLFormElement>((_props, ref) => {
   const nav = useNavigate();
   const location = useLocation();
-  console.log(location);
   const params = useParams();
   const editeMode: StudentType = location?.state?.editeInfo;
 
@@ -27,7 +26,6 @@ const AddNewStudent = forwardRef<HTMLFormElement>((_props, ref) => {
   });
 
   const onSubmit = async (data: StudentType) => {
-    console.log(location.state.editeInfo);
     fetchDataFunction(data);
     nav("/");
     reset();

@@ -2,14 +2,34 @@
 import Student from "../students";
 import { useStoreManager } from "../store/store";
 import Button from "../UI/button-custom";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import Input from "../UI/input-custom";
 import { useNavigate } from "react-router-dom";
 import { useGetStudents } from "../hooks/useStudentshook";
+import axios, { AxiosError } from "axios";
 const StudentRoute = () => {
   const navigate = useNavigate();
   const { setDisplayCard, displayCard } = useStoreManager();
 
+  // const { deleteStudentById } = useRemoveStudents();
+  const [Messages, setMessages] = useState<
+    { message?: string } | { Error: string }
+  >();
+  const deleteHandlers = async (id: number) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:5000/api/statusStudent/DELETE/remove/${id}`
+      );
+      setMessages((prev) => ({ ...prev, message: response.data }));
+    } catch (error) {
+      const axiosError = error as AxiosError;
+
+      setMessages((prev) => ({
+        ...prev,
+        Error: (axiosError?.response?.data as string) || (error as string),
+      }));
+    }
+  };
   const { dataStatus } = useGetStudents();
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -25,6 +45,7 @@ const StudentRoute = () => {
   if (dataStatus.isLoading) {
     return <div>Loading ...</div>;
   }
+
   return (
     <>
       <div className="relative  w-full h-full  flex flex-col gap-4  items-center">
@@ -51,7 +72,7 @@ const StudentRoute = () => {
                 classNumber={it.std_classNumber}
                 phoneNumber={it.std_phoneNumber}
                 email={it.std_email}
-                onClickForDelete={() => console.log(it.std_id)}
+                onClickForDelete={() => deleteHandlers(it.std_id ?? 0)}
                 onClickForEdite={() => {
                   navigate(`/addStudent/${it.std_id}`, {
                     state: { editeInfo: it },
