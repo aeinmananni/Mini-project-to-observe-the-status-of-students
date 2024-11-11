@@ -2,7 +2,7 @@
 import Student from "../students";
 import { useStoreManager } from "../store/store";
 import Button from "../UI/button-custom";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Input from "../UI/input-custom";
 import { useNavigate } from "react-router-dom";
 import { useGetStudents } from "../hooks/useStudentshook";
@@ -15,12 +15,17 @@ const StudentRoute = () => {
   const [Messages, setMessages] = useState<
     { message?: string } | { Error: string }
   >();
+
+  const { dataStatus, setRefresh } = useGetStudents();
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
   const deleteHandlers = async (id: number) => {
     try {
       const response = await axios.delete(
         `http://localhost:5000/api/statusStudent/DELETE/remove/${id}`
       );
       setMessages((prev) => ({ ...prev, message: response.data }));
+      setRefresh((c) => !c);
     } catch (error) {
       const axiosError = error as AxiosError;
 
@@ -30,9 +35,6 @@ const StudentRoute = () => {
       }));
     }
   };
-  const { dataStatus } = useGetStudents();
-  const inputRef = useRef<HTMLInputElement | null>(null);
-
   const handelScroll = () => {
     if (inputRef.current) {
       inputRef.current.scrollIntoView({
@@ -72,7 +74,9 @@ const StudentRoute = () => {
                 classNumber={it.std_classNumber}
                 phoneNumber={it.std_phoneNumber}
                 email={it.std_email}
-                onClickForDelete={() => deleteHandlers(it.std_id ?? 0)}
+                onClickForDelete={() => {
+                  deleteHandlers(it.std_id ?? 0);
+                }}
                 onClickForEdite={() => {
                   navigate(`/addStudent/${it.std_id}`, {
                     state: { editeInfo: it },
