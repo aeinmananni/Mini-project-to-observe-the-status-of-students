@@ -8,5 +8,4 @@ export default defineConfig({
      open:true,
     
   },
-  base: '/Mini-project-to-observe-the-status-of-students/'
 })
