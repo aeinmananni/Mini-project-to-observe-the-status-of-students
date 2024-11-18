@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { StudentType } from "../models";
 import useFetchApi from "./use-fetch";
-
+import { useStoreManager } from "../store/store";
 export const useGetStudents = () => {
-  const [refresh, setRefresh] = useState<boolean>(false);
+  const { refresh } = useStoreManager();
   const { dataStatus, fetchDataFunction } = useFetchApi<StudentType[]>({
     apiUrl: "http://localhost:5000/api/statusStudent/GET/All",
     method: "GET",
@@ -11,7 +11,7 @@ export const useGetStudents = () => {
   useEffect(() => {
     fetchDataFunction();
   }, [refresh]);
-  return { dataStatus, setRefresh };
+  return { dataStatus };
 };
 
 export const useSaveStudents = (id?: number) => {
@@ -24,4 +24,26 @@ export const useSaveStudents = (id?: number) => {
   });
 
   return { dataStatus, fetchDataFunction };
+};
+
+export const useRemoveStudents = () => {
+  const { setRefresh, refresh } = useStoreManager();
+  const [id, setID] = useState<number | null>(null);
+  const deleteHandlers = (id: number) => {
+    setID(id);
+    setRefresh((c) => !c);
+  };
+  const { fetchDataFunction } = useFetchApi({
+    apiUrl:
+      id !== null
+        ? `http://localhost:5000/api/statusStudent/DELETE/remove/${id}`
+        : "",
+    method: "DELETE",
+  });
+  useEffect(() => {
+    if (id !== null) {
+      fetchDataFunction();
+    }
+  }, [id, refresh]);
+  return { deleteHandlers };
 };

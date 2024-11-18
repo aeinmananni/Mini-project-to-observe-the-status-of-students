@@ -6,7 +6,9 @@ import { forwardRef } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useSaveStudents } from "../hooks/useStudentshook";
+import { useStoreManager } from "../store/store";
 const AddNewStudent = forwardRef<HTMLFormElement>((_props, ref) => {
+  const setRefresh = useStoreManager((state) => state.setRefresh);
   const nav = useNavigate();
   const location = useLocation();
   const params = useParams();
@@ -27,6 +29,7 @@ const AddNewStudent = forwardRef<HTMLFormElement>((_props, ref) => {
 
   const onSubmit = async (data: StudentType) => {
     fetchDataFunction(data);
+    setRefresh((c) => !c);
     nav("/");
     reset();
     console.log(dataStatus);

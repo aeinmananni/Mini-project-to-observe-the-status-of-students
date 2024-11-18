@@ -2,39 +2,34 @@
 import Student from "../students";
 import { useStoreManager } from "../store/store";
 import Button from "../UI/button-custom";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import Input from "../UI/input-custom";
 import { useNavigate } from "react-router-dom";
-import { useGetStudents } from "../hooks/useStudentshook";
-import axios, { AxiosError } from "axios";
+import { useGetStudents, useRemoveStudents } from "../hooks/useStudentshook";
 const StudentRoute = () => {
   const navigate = useNavigate();
   const { setDisplayCard, displayCard } = useStoreManager();
 
-  // const { deleteStudentById } = useRemoveStudents();
-  const [Messages, setMessages] = useState<
-    { message?: string } | { Error: string }
-  >();
-
-  const { dataStatus, setRefresh } = useGetStudents();
+  const { deleteHandlers } = useRemoveStudents();
+  const { dataStatus } = useGetStudents();
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  const deleteHandlers = async (id: number) => {
-    try {
-      const response = await axios.delete(
-        `http://localhost:5000/api/statusStudent/DELETE/remove/${id}`
-      );
-      setMessages((prev) => ({ ...prev, message: response.data }));
-      setRefresh((c) => !c);
-    } catch (error) {
-      const axiosError = error as AxiosError;
+  // const deleteHandlers = async (id: number) => {
+  //   try {
+  //     const response = await axios.delete(
+  //       `http://localhost:5000/api/statusStudent/DELETE/remove/${id}`
+  //     );
+  //     setMessages((prev) => ({ ...prev, message: response.data }));
+  //     setRefresh((c) => !c);
+  //   } catch (error) {
+  //     const axiosError = error as AxiosError;
 
-      setMessages((prev) => ({
-        ...prev,
-        Error: (axiosError?.response?.data as string) || (error as string),
-      }));
-    }
-  };
+  //     setMessages((prev) => ({
+  //       ...prev,
+  //       Error: (axiosError?.response?.data as string) || (error as string),
+  //     }));
+  //   }
+  // };
   const handelScroll = () => {
     if (inputRef.current) {
       inputRef.current.scrollIntoView({

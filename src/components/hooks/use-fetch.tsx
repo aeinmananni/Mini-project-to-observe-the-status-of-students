@@ -26,9 +26,6 @@ const useFetchApi = <T,>({ apiUrl, method = "GET" }: FetchApiType) => {
       const options: AxiosRequestConfig = {
         method,
         url: apiUrl,
-        headers: {
-          "Content-Type": "application/json",
-        },
         data: method === "POST" || method === "PUT" ? bodyData : null,
       };
       const response = await axios(options);
