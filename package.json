@@ -19,7 +19,7 @@
     "react-use": "^17.5.1",
     "zustand": "^4.5.4"
   },
-  "homepage": "https://<username>.github.io/<repository-name>",
+  "homepage": "https://aeinmananni.github.io/Mini-project-to-observe-the-status-of-students/",
   "devDependencies": {
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
