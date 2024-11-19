@@ -5,7 +5,7 @@ import { useStoreManager } from "../store/store";
 export const useGetStudents = () => {
   const { refresh } = useStoreManager();
   const { dataStatus, fetchDataFunction } = useFetchApi<StudentType[]>({
-    apiUrl: "http://localhost:3000/api/statusStudent/GET/All",
+    apiUrl: "http://localhost:3000/api/students/GET/All",
     method: "GET",
   });
   useEffect(() => {
