@@ -5,7 +5,7 @@ import { useStoreManager } from "../store/store";
 export const useGetStudents = () => {
   const { refresh } = useStoreManager();
   const { dataStatus, fetchDataFunction } = useFetchApi<StudentType[]>({
-    apiUrl: "http://localhost:5000/api/statusStudent/GET/All",
+    apiUrl: "http://localhost:3000/api/statusStudent/GET/All",
     method: "GET",
   });
   useEffect(() => {
@@ -18,8 +18,8 @@ export const useSaveStudents = (id?: number) => {
   const { dataStatus, fetchDataFunction } = useFetchApi<StudentType>({
     apiUrl:
       id && id !== 0
-        ? `http://localhost:5000/api/statusStudent/PUT/Edite/${id}`
-        : "http://localhost:5000/api/statusStudent/POST/Add",
+        ? `http://localhost:3000/api/statusStudent/PUT/Edite/${id}`
+        : "http://localhost:3000/api/statusStudent/POST/Add",
     method: id ? "PUT" : "POST",
   });
 
@@ -36,7 +36,7 @@ export const useRemoveStudents = () => {
   const { fetchDataFunction } = useFetchApi({
     apiUrl:
       id !== null
-        ? `http://localhost:5000/api/statusStudent/DELETE/remove/${id}`
+        ? `http://localhost:3000/api/statusStudent/DELETE/remove/${id}`
         : "",
     method: "DELETE",
   });
